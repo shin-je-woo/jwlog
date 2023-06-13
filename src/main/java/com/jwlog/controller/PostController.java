@@ -1,13 +1,20 @@
 package com.jwlog.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import com.jwlog.request.PostCreate;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
+@Slf4j
 @RestController
 public class PostController {
 
-    @GetMapping("/posts")
-    public String get() {
-        return "Hello Jewoo";
+    @PostMapping("/posts")
+    public Map<String, String> post(@RequestBody @Valid PostCreate params) {
+        return Map.of();
     }
 }
