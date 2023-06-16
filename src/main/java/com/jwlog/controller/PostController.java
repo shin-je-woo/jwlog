@@ -1,7 +1,7 @@
 package com.jwlog.controller;
 
-import com.jwlog.domain.Post;
 import com.jwlog.request.PostCreate;
+import com.jwlog.response.PostResponse;
 import com.jwlog.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class PostController {
     }
 
     @GetMapping("/posts/{postId}")
-    public Post get(@PathVariable Long postId) {
+    public PostResponse get(@PathVariable Long postId) {
         return postService.get(postId);
     }
 }

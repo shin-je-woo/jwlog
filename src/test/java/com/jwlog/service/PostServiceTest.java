@@ -3,6 +3,7 @@ package com.jwlog.service;
 import com.jwlog.domain.Post;
 import com.jwlog.repository.PostRepository;
 import com.jwlog.request.PostCreate;
+import com.jwlog.response.PostResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,7 +58,7 @@ class PostServiceTest {
         Long postId = post.getId();
 
         // when
-        Post findPost = postService.get(postId);
+        PostResponse findPost = postService.get(postId);
 
         // then
         assertNotNull(findPost);
