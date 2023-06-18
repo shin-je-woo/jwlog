@@ -1,12 +1,12 @@
 package com.jwlog.controller;
 
 import com.jwlog.request.PostCreate;
+import com.jwlog.request.PostSearch;
 import com.jwlog.response.PostResponse;
 import com.jwlog.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,7 +29,7 @@ public class PostController {
     }
 
     @GetMapping("posts")
-    public List<PostResponse> getList(Pageable pageable) {
-        return postService.getList(pageable);
+    public List<PostResponse> getList(@ModelAttribute PostSearch postSearch) {
+        return postService.getList(postSearch);
     }
 }

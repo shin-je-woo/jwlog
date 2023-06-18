@@ -3,20 +3,19 @@ package com.jwlog.service;
 import com.jwlog.domain.Post;
 import com.jwlog.repository.PostRepository;
 import com.jwlog.request.PostCreate;
+import com.jwlog.request.PostSearch;
 import com.jwlog.response.PostResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @SpringBootTest
 class PostServiceTest {
@@ -83,13 +82,16 @@ class PostServiceTest {
                         .build())
                 .toList();
         postRepository.saveAll(requestPosts);
-        PageRequest pageRequest = PageRequest.of(0, 5, DESC, "id");
+
+        PostSearch postSearch = PostSearch.builder()
+                .page(1)
+                .build();
 
         // when
-        List<PostResponse> posts = postService.getList(pageRequest);
+        List<PostResponse> posts = postService.getList(postSearch);
 
         // then
-        assertEquals(5, posts.size());
+        assertEquals(20, posts.size());
         assertEquals("글 제목 30", posts.get(0).getTitle());
         assertEquals("글 제목 26", posts.get(4).getTitle());
     }
