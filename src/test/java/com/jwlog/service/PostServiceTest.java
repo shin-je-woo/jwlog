@@ -9,9 +9,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+
+import java.util.List;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @SpringBootTest
 class PostServiceTest {
@@ -23,7 +28,7 @@ class PostServiceTest {
     PostRepository postRepository;
 
     @BeforeEach
-    void beforEach() {
+    void beforeEach() {
         postRepository.deleteAll();
     }
 
@@ -48,7 +53,7 @@ class PostServiceTest {
 
     @Test
     @DisplayName("글 1개 조회")
-    void test() throws Exception {
+    void test2() throws Exception {
         // given
         Post post = Post.builder()
                 .title("글 제목")
@@ -65,5 +70,27 @@ class PostServiceTest {
         assertEquals(1, postRepository.count());
         assertEquals("글 제목", findPost.getTitle());
         assertEquals("글 내용", findPost.getContent());
+    }
+
+    @Test
+    @DisplayName("글 1페이지 조회")
+    void test3() throws Exception {
+        // given
+        List<Post> requestPosts = IntStream.range(1, 31)
+                .mapToObj(i -> Post.builder()
+                        .title("글 제목 " + i)
+                        .content("글 내용 " + i)
+                        .build())
+                .toList();
+        postRepository.saveAll(requestPosts);
+        PageRequest pageRequest = PageRequest.of(0, 5, DESC, "id");
+
+        // when
+        List<PostResponse> posts = postService.getList(pageRequest);
+
+        // then
+        assertEquals(5, posts.size());
+        assertEquals("글 제목 30", posts.get(0).getTitle());
+        assertEquals("글 제목 26", posts.get(4).getTitle());
     }
 }

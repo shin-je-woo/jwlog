@@ -12,6 +12,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+import java.util.stream.IntStream;
+
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -34,7 +38,7 @@ class PostControllerTest {
     private PostRepository postRepository;
 
     @BeforeEach
-    void beforEach() {
+    void beforeEach() {
         postRepository.deleteAll();
     }
 
@@ -118,10 +122,32 @@ class PostControllerTest {
         postRepository.save(post);
 
         // expected
-        mockMvc.perform(get("/posts/{postId}", post.getId()))
+        mockMvc.perform(get("/posts/{postId}", post.getId())
+                        .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("글 제목"))
                 .andExpect(jsonPath("$.content").value("글 내용"))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("글 1페이지 조회")
+    void test5() throws Exception {
+        // given
+        List<Post> requestPosts = IntStream.range(1, 31)
+                .mapToObj(i -> Post.builder()
+                        .title("글 제목 " + i)
+                        .content("글 내용 " + i)
+                        .build())
+                .toList();
+        postRepository.saveAll(requestPosts);
+
+        // expected
+        mockMvc.perform(get("/posts?page=1&sort=id,desc")
+                        .contentType(APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()", is(5)))
+                .andExpect(jsonPath("$[0].title").value("글 제목 30"))
+                .andExpect(jsonPath("$[0].content").value("글 내용 30"))
                 .andDo(print());
     }
 }

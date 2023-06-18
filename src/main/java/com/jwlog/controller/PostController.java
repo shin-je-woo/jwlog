@@ -6,7 +6,10 @@ import com.jwlog.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -23,5 +26,10 @@ public class PostController {
     @GetMapping("/posts/{postId}")
     public PostResponse get(@PathVariable Long postId) {
         return postService.get(postId);
+    }
+
+    @GetMapping("posts")
+    public List<PostResponse> getList(Pageable pageable) {
+        return postService.getList(pageable);
     }
 }
