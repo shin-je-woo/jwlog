@@ -1,6 +1,7 @@
 package com.jwlog.controller;
 
 import com.jwlog.request.PostCreate;
+import com.jwlog.request.PostEdit;
 import com.jwlog.request.PostSearch;
 import com.jwlog.response.PostResponse;
 import com.jwlog.service.PostService;
@@ -28,8 +29,18 @@ public class PostController {
         return postService.get(postId);
     }
 
-    @GetMapping("posts")
+    @GetMapping("/posts")
     public List<PostResponse> getList(@ModelAttribute PostSearch postSearch) {
         return postService.getList(postSearch);
+    }
+
+    @PatchMapping("/posts/{postId}")
+    public void edit(@PathVariable Long postId, @RequestBody @Valid PostEdit postEdit) {
+        postService.edit(postId, postEdit);
+    }
+
+    @DeleteMapping("/posts/{postId}")
+    public void delete(@PathVariable Long postId) {
+        postService.delete(postId);
     }
 }

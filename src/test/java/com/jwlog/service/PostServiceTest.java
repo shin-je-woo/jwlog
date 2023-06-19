@@ -3,6 +3,7 @@ package com.jwlog.service;
 import com.jwlog.domain.Post;
 import com.jwlog.repository.PostRepository;
 import com.jwlog.request.PostCreate;
+import com.jwlog.request.PostEdit;
 import com.jwlog.request.PostSearch;
 import com.jwlog.response.PostResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -94,5 +95,73 @@ class PostServiceTest {
         assertEquals(20, posts.size());
         assertEquals("글 제목 30", posts.get(0).getTitle());
         assertEquals("글 제목 26", posts.get(4).getTitle());
+    }
+
+    @Test
+    @DisplayName("글 제목만 수정, 글 내용은 변경 안됨")
+    void test4() throws Exception {
+        // given
+        Post post = Post.builder()
+                .title("글 제목")
+                .content("글 내용")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("변경 제목")
+                .build();
+
+        // when
+        postService.edit(post.getId(), postEdit);
+
+        // then
+        Post changedPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다. id = " + post.getId()));
+
+        assertEquals(postEdit.getTitle(), changedPost.getTitle());
+        assertEquals(post.getContent(), changedPost.getContent());
+    }
+
+    @Test
+    @DisplayName("글 제목, 글 내용 수정")
+    void test5() throws Exception {
+        // given
+        Post post = Post.builder()
+                .title("글 제목")
+                .content("글 내용")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("변경 제목")
+                .content("변경 내용")
+                .build();
+
+        // when
+        postService.edit(post.getId(), postEdit);
+
+        // then
+        Post changedPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다. id = " + post.getId()));
+
+        assertEquals(postEdit.getTitle(), changedPost.getTitle());
+        assertEquals(postEdit.getContent(), changedPost.getContent());
+    }
+
+    @Test
+    @DisplayName("게시글 삭제")
+    void test6() throws Exception {
+        // given
+        Post post = Post.builder()
+                .title("글 제목")
+                .content("글 내용")
+                .build();
+        postRepository.save(post);
+
+        // when
+        postService.delete(post.getId());
+
+        // then
+        assertEquals(0, postRepository.count());
     }
 }

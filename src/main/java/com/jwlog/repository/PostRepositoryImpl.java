@@ -10,7 +10,7 @@ import java.util.List;
 import static com.jwlog.domain.QPost.post;
 
 @RequiredArgsConstructor
-public class PostRepositoryImpl implements PostRepositoryCustom{
+public class PostRepositoryImpl implements PostRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
