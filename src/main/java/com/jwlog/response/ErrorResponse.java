@@ -16,7 +16,9 @@ public class ErrorResponse {
     public ErrorResponse(String code, String message, Map<String, String> validation) {
         this.code = code;
         this.message = message;
-        this.validation.putAll(validation);
+        if (validation != null) {
+            this.validation.putAll(validation);
+        }
     }
 
     public void addValidation(String fieldName, String errorMessage) {
