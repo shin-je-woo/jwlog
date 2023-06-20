@@ -1,7 +1,9 @@
 package com.jwlog.controller;
 
+import com.jwlog.exception.JwlogException;
 import com.jwlog.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,7 +18,7 @@ public class ExceptionController {
     public ErrorResponse methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
 
         ErrorResponse response = ErrorResponse.builder()
-                .code("400")
+                .code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
                 .message("잘못된 요청입니다.")
                 .build();
 
@@ -25,5 +27,20 @@ public class ExceptionController {
         }
 
         return response;
+    }
+
+    @ExceptionHandler(JwlogException.class)
+    public ResponseEntity<ErrorResponse> postNotFoundHandler(JwlogException e) {
+
+        ErrorResponse responseBody = ErrorResponse.builder()
+                .code(String.valueOf(e.getStatusCode()))
+                .message(e.getMessage())
+                .validation(e.getValidation())
+                .build();
+
+
+        return ResponseEntity
+                .status(e.getStatusCode())
+                .body(responseBody);
     }
 }

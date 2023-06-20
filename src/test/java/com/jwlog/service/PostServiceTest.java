@@ -1,6 +1,7 @@
 package com.jwlog.service;
 
 import com.jwlog.domain.Post;
+import com.jwlog.exception.PostNotFound;
 import com.jwlog.repository.PostRepository;
 import com.jwlog.request.PostCreate;
 import com.jwlog.request.PostEdit;
@@ -15,8 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class PostServiceTest {
@@ -163,5 +163,52 @@ class PostServiceTest {
 
         // then
         assertEquals(0, postRepository.count());
+    }
+
+    @Test
+    @DisplayName("글 1개 조회 - 글이 없는 경우 PostNotFound 예외를 던진다.")
+    void test7() throws Exception {
+        // given
+        Post post = Post.builder()
+                .title("글 제목")
+                .content("글 내용")
+                .build();
+        postRepository.save(post);
+
+        // expected
+        assertThrows(PostNotFound.class, () -> postService.get(post.getId() + 1L));
+    }
+
+    @Test
+    @DisplayName("게시글 삭제 - 글이 없는 경우 PostNotFound 예외를 던진다.")
+    void test8() throws Exception {
+        // given
+        Post post = Post.builder()
+                .title("글 제목")
+                .content("글 내용")
+                .build();
+        postRepository.save(post);
+
+        // expected
+        assertThrows(PostNotFound.class, () -> postService.delete(post.getId() + 1L));
+    }
+
+    @Test
+    @DisplayName("글 수정 - 글이 없는 경우 PostNotFound 예외를 던진다.")
+    void test9() throws Exception {
+        // given
+        Post post = Post.builder()
+                .title("글 제목")
+                .content("글 내용")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("변경 제목")
+                .content("변경 내용")
+                .build();
+
+        // expected
+        assertThrows(PostNotFound.class, () -> postService.edit(post.getId() + 1L, postEdit));
     }
 }
