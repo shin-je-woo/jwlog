@@ -61,6 +61,11 @@ asciidoctor {
 	dependsOn test
 }
 
+// static/docs 폴더 비우기
+asciidoctor.doFirst {
+	delete file('src/main/resources/static/docs')
+}
+
 bootJar {
 	dependsOn asciidoctor
 

@@ -1,13 +1,18 @@
 = 제우로그 API
 :toc:
 
-== 글 단건 조회
-
+== 글 등록
 === 요청
-include::{snippets}/index/http-request.adoc[]
-
+include::{snippets}/post-create/http-request.adoc[]
+include::{snippets}/post-create/request-fields.adoc[]
 === 응답
-include::{snippets}/index/http-response.adoc[]
+include::{snippets}/post-create/http-response.adoc[]
 
-=== curl
-include::{snippets}/index/curl-request.adoc[]
+
+== 글 단건 조회
+=== 요청
+include::{snippets}/get-one/http-request.adoc[]
+include::{snippets}/get-one/path-parameters.adoc[]
+=== 응답
+include::{snippets}/get-one/http-response.adoc[]
+include::{snippets}/get-one/response-fields.adoc[]
