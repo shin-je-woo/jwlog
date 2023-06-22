@@ -22,6 +22,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -92,8 +93,10 @@ public class PostControllerDocTest {
                 .andExpect(status().isOk())
                 .andDo(document("post-create",
                         requestFields(
-                                fieldWithPath("title").description("게시글 제목"),
+                                fieldWithPath("title").description("게시글 제목")
+                                        .attributes(key("required").value(true)),
                                 fieldWithPath("content").description("게시글 내용")
+                                        .attributes(key("required").value(true))
                         )
                 ));
     }
