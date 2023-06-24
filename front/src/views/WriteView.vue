@@ -2,21 +2,26 @@
 import {ref} from 'vue'
 
 import axios from "axios";
+import {useRouter} from "vue-router";
 
-const title = ref('')
-const content = ref('')
+const title = ref('');
+const content = ref('');
+
+const router = useRouter();
 
 const write = function () {
   axios.post("/jwlog/posts", {
     title: title.value,
     content: content.value
+  }).then(() => {
+    router.replace({name: "home"})
   });
 }
 </script>
 
 <template>
   <div>
-    <el-input v-model="title" type="text" placeholder="제목을 입력해주세요" />
+    <el-input v-model="title" type="text" placeholder="제목을 입력해주세요"/>
   </div>
 
   <div class="mt-2">
