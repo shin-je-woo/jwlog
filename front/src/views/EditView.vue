@@ -1,38 +1,37 @@
 <script setup lang="ts">
+import {useRouter} from 'vue-router'
+import axios from 'axios'
+import {ref} from 'vue'
 
-import {useRouter} from "vue-router";
-import axios from "axios";
-import {ref} from "vue";
-
-const router = useRouter();
+const router = useRouter()
 
 const props = defineProps({
   postId: {
     type: [Number, String],
-    required: true,
-  },
-});
+    required: true
+  }
+})
 
 const post = ref({
   id: 0,
-  title: "",
-  content: ""
-});
+  title: '',
+  content: ''
+})
 
 axios.get(`/jwlog/posts/${props.postId}`).then((response) => {
-  post.value = response.data;
-});
+  post.value = response.data
+})
 
 const edit = () => {
   axios.patch(`/jwlog/posts/${props.postId}`, post.value).then(() => {
-    router.replace({name: "home"});
-  });
-};
+    router.replace({ name: 'home' })
+  })
+}
 </script>
 
 <template>
   <div>
-    <el-input v-model="post.title" type="text"/>
+    <el-input v-model="post.title" type="text" />
   </div>
 
   <div class="mt-2">
