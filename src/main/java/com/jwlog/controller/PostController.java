@@ -22,7 +22,7 @@ public class PostController {
 
     @GetMapping("/test")
     public String test(UserSession userSession) {
-        log.info("@@@ username = {}", userSession.getName());
+        log.info("@@@ id = {}", userSession.getId());
         return "Hello";
     }
 

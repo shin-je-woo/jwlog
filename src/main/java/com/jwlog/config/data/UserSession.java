@@ -1,16 +1,13 @@
 package com.jwlog.config.data;
 
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class UserSession {
+public final class UserSession {
 
-    private String name;
+    private final Long id;
 
-    public UserSession(String name) {
-        this.name = name;
+    public UserSession(Long id) {
+        this.id = id;
     }
 }
