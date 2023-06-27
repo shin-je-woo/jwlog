@@ -1,5 +1,6 @@
 package com.jwlog.controller;
 
+import com.jwlog.config.data.UserSession;
 import com.jwlog.request.PostCreate;
 import com.jwlog.request.PostEdit;
 import com.jwlog.request.PostSearch;
@@ -20,7 +21,8 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/test")
-    public String test() {
+    public String test(UserSession userSession) {
+        log.info("@@@ username = {}", userSession.getName());
         return "Hello";
     }
 
