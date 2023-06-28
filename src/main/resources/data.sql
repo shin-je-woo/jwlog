@@ -1,0 +1,1 @@
+insert into users (name, email, password, created_at) values ('신제우', 'shinjw0926@naver.com', '1234', '2023-06-28 22:11')

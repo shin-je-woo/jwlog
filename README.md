@@ -8,6 +8,8 @@
 
 ## 로그인 -> spring security
 
+## 패스워드 암호화 -> scrypt, bcrypt
+
 # AWS EC2
 
 ## ec2 인스턴스에 ssh 접속하기
