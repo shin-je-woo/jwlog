@@ -1,7 +1,9 @@
 package com.jwlog.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jwlog.domain.Session;
 import com.jwlog.domain.User;
+import com.jwlog.repository.SessionRepository;
 import com.jwlog.repository.UserRepository;
 import com.jwlog.request.Login;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +14,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -26,14 +30,18 @@ class AuthControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
+    ObjectMapper objectMapper;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    ObjectMapper objectMapper;
+    SessionRepository sessionRepository;
 
     @BeforeEach
     void beforeEach() {
         userRepository.deleteAll();
+        sessionRepository.deleteAll();
     }
 
     @Test
@@ -56,8 +64,57 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("로그인 요청 성공 - 세션 1개 생성")
+    void test2() throws Exception {
+        // given
+        User user = insertUserEntity();
+        Login login = Login.builder()
+                .email("shinjw")
+                .password("1234")
+                .build();
+        String loginJson = objectMapper.writeValueAsString(login);
+
+        // expected
+        mockMvc.perform(post("/auth/login")
+                        .contentType(APPLICATION_JSON)
+                        .content(loginJson))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        Session session = sessionRepository.findByUser(user)
+                .orElseThrow(RuntimeException::new);
+
+        assertEquals(session.getUser().getId(), user.getId());
+    }
+
+    @Test
+    @DisplayName("로그인 요청 성공 후 세션 응답")
+    void test3() throws Exception {
+        // given
+        User user = insertUserEntity();
+        Login login = Login.builder()
+                .email("shinjw")
+                .password("1234")
+                .build();
+        String loginJson = objectMapper.writeValueAsString(login);
+
+        // expected
+        mockMvc.perform(post("/auth/login")
+                        .contentType(APPLICATION_JSON)
+                        .content(loginJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accessToken", notNullValue()))
+                .andReturn();
+
+        Session session = sessionRepository.findByUser(user)
+                .orElseThrow(RuntimeException::new);
+
+        assertEquals(session.getUser().getId(), user.getId());
+    }
+
+    @Test
     @DisplayName("로그인 요청 실패 - ID 또는 비밀번호 오입력")
-    void test() throws Exception {
+    void test4() throws Exception {
         // given
         insertUserEntity();
         Login login = Login.builder()
@@ -77,13 +134,13 @@ class AuthControllerTest {
                 .andDo(print());
     }
 
-    private void insertUserEntity() {
+    private User insertUserEntity() {
         User user = User.builder()
                 .name("신제우")
                 .email("shinjw")
                 .password("1234")
                 .build();
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
 }
