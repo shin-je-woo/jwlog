@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface SessionRepository extends JpaRepository<Session, Long> {
 
     Optional<Session> findByUser(User user);
+
+    Optional<Session> findByAccessToken(String accessToken);
 }

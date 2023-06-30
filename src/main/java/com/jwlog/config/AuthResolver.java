@@ -1,7 +1,10 @@
 package com.jwlog.config;
 
 import com.jwlog.config.data.UserSession;
+import com.jwlog.domain.Session;
 import com.jwlog.exception.UnauthorizedException;
+import com.jwlog.repository.SessionRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -9,7 +12,10 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+@RequiredArgsConstructor
 public class AuthResolver implements HandlerMethodArgumentResolver {
+
+    private final SessionRepository sessionRepository;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -23,8 +29,9 @@ public class AuthResolver implements HandlerMethodArgumentResolver {
             throw new UnauthorizedException();
         }
 
-        // TODO. DB 사용자 확인 작업
+        Session session = sessionRepository.findByAccessToken(accessToken)
+                .orElseThrow(UnauthorizedException::new);
 
-        return new UserSession(1L);
+        return new UserSession(session.getUser().getId());
     }
 }
