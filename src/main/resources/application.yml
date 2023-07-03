@@ -29,3 +29,6 @@ spring:
         show_sql: true
         format_sql: true
         highlight_sql: true
+
+jwlog-auth:
+  jwt-key: "Ln5862Lso8CeqoSoJL9GbNIvg9+74LtxULYrGHNb4dg="

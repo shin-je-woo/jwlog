@@ -1,68 +1,56 @@
 package com.jwlog.config;
 
 import com.jwlog.config.data.UserSession;
-import com.jwlog.domain.Session;
 import com.jwlog.exception.UnauthorizedException;
 import com.jwlog.repository.SessionRepository;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+
+import javax.crypto.SecretKey;
 
 @Slf4j
 @RequiredArgsConstructor
 public class AuthResolver implements HandlerMethodArgumentResolver {
 
     private final SessionRepository sessionRepository;
+    private final AppConfig appConfig;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.getParameterType().isAssignableFrom(UserSession.class);
     }
 
-    /* 인증 - 헤더 이용 */
-//    @Override
-//    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-//        String accessToken = webRequest.getHeader("Authorization");
-//        if (!StringUtils.hasText(accessToken)) {
-//            throw new UnauthorizedException();
-//        }
-//
-//        Session session = sessionRepository.findByAccessToken(accessToken)
-//                .orElseThrow(UnauthorizedException::new);
-//
-//        return new UserSession(session.getUser().getId());
-//    }
-
-
-    /* 인증 - 쿠키 이용 */
+    /* 인증 - JWT 이용 */
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        HttpServletRequest servletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
-        if (servletRequest == null) {
-            log.error("servletRequest is null");
+
+        String jws = webRequest.getHeader("Authorization");
+        if (!StringUtils.hasText(jws)) {
             throw new UnauthorizedException();
         }
 
-        Cookie[] cookies = servletRequest.getCookies();
-        if (cookies.length == 0) {
-            log.error("쿠키가 없습니다.");
+        SecretKey secretKey = Keys.hmacShaKeyFor(appConfig.getJwtKey());
+        try {
+            Jws<Claims> claims = Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(jws);
+
+            String userId = claims.getBody().getSubject();
+            return new UserSession(Long.valueOf(userId));
+        } catch (JwtException e) {
+            throw new UnauthorizedException();
         }
-
-        String SESSION = cookies[0].getName();
-        String accessToken = cookies[0].getValue();
-
-        log.info("session={}", SESSION);
-        log.info("accessToken={}", accessToken);
-
-        Session session = sessionRepository.findByAccessToken(accessToken)
-                .orElseThrow(UnauthorizedException::new);
-
-        return new UserSession(session.getUser().getId());
     }
 }

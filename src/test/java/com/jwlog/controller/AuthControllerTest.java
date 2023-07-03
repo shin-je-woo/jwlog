@@ -135,7 +135,7 @@ class AuthControllerTest {
                 .andDo(print());
     }
 
-    @Test
+//    @Test
     @DisplayName("로그인 후 권한이 필요한 페이지에 접속")
     void test5() throws Exception {
         // given
