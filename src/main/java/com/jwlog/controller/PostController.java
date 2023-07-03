@@ -1,6 +1,5 @@
 package com.jwlog.controller;
 
-import com.jwlog.config.data.UserSession;
 import com.jwlog.request.PostCreate;
 import com.jwlog.request.PostEdit;
 import com.jwlog.request.PostSearch;
@@ -19,11 +18,6 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
-
-    @GetMapping("/test")
-    public Long test(UserSession userSession) {
-        return userSession.getId();
-    }
 
     @PostMapping("/posts")
     public void post(@RequestBody @Valid PostCreate request) {
