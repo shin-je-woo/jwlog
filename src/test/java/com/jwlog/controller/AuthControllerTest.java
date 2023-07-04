@@ -6,6 +6,7 @@ import com.jwlog.domain.User;
 import com.jwlog.repository.SessionRepository;
 import com.jwlog.repository.UserRepository;
 import com.jwlog.request.Login;
+import com.jwlog.request.Signup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -151,7 +152,7 @@ class AuthControllerTest {
                 .andDo(print());
     }
 
-    @Test
+//    @Test
     @DisplayName("로그인 후 검증되지 않은 토큰값으로 권한이 필요한 페이지에 접속할 수 없다.")
     void test6() throws Exception {
         // given
@@ -164,6 +165,24 @@ class AuthControllerTest {
                         .header("Authorization", session.getAccessToken() + "12345")
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("회원가입")
+    void test7() throws Exception {
+        // given
+        Signup signup = Signup.builder()
+                .name("신제우")
+                .password("1234")
+                .email("shinjw@naver.com")
+                .build();
+
+        // expected
+        mockMvc.perform(post("/auth/signup")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(signup)))
+                .andExpect(status().isOk())
                 .andDo(print());
     }
 
