@@ -1,6 +1,6 @@
 package com.jwlog.service;
 
-import com.jwlog.domain.Session;
+import com.jwlog.crypto.PasswordEncoder;
 import com.jwlog.domain.User;
 import com.jwlog.exception.AlreadyExistsEmailException;
 import com.jwlog.exception.InvalidSigninInfo;
@@ -9,7 +9,6 @@ import com.jwlog.request.Login;
 import com.jwlog.request.Signup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,19 +23,22 @@ public class AuthService {
 
     @Transactional
     public Long signin(Login login) {
-        User user = userRepository.findByEmailAndPassword(login.getEmail(), login.getPassword())
+
+        User user = userRepository.findByEmail(login.getEmail())
                 .orElseThrow(InvalidSigninInfo::new);
-        Session session = user.addSession();
+
+        if (!PasswordEncoder.matches(login.getPassword(), user.getPassword())) {
+            throw new InvalidSigninInfo();
+        }
 
         return user.getId();
     }
 
     public void signup(Signup signup) {
+
         valdateDuplEmail(signup);
 
-        SCryptPasswordEncoder encoder = new SCryptPasswordEncoder(16, 8, 1, 32, 64);
-        String encryptedPassword = encoder.encode(signup.getPassword());
-
+        String encryptedPassword = PasswordEncoder.encrypt(signup.getPassword());
         User user = User.builder()
                 .name(signup.getName())
                 .password(encryptedPassword)
