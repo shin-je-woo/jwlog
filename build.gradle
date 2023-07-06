@@ -33,6 +33,9 @@ dependencies {
 	implementation 'org.springframework.security:spring-security-crypto'
 	implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
 
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.security:spring-security-test'
+
 	// Querydsl 추가
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
 	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
