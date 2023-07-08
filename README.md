@@ -1,11 +1,5 @@
 # jwlog
 
-## 댓글 -> 테이블 모델링 (comment) (= comment Entity), 몇 단계로 할지? (댓글 or 대댓글)
-
-## 비공개, 공개 여부 (상태) -> enum
-
-## 카테고리 -> DB or enum
-
 ## 로그인 -> spring security
 
 ## 패스워드 암호화 -> scrypt, bcrypt
