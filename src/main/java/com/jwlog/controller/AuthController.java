@@ -21,6 +21,16 @@ public class AuthController {
         return "로그인 페이지입니다.";
     }
 
+    @GetMapping("/auth/user")
+    public String user() {
+        return "유저 페이지입니다.";
+    }
+
+    @GetMapping("/auth/admin")
+    public String admin() {
+        return "어드민 페이지입니다.";
+    }
+
     @PostMapping("/auth/signup")
     public void signup(@RequestBody Signup signup) {
         authService.signup(signup);

@@ -1,13 +1,28 @@
-### 로그인
-
-POST http://localhost:8080/auth/login
+### 회원가입
+POST http://127.0.0.1:8080/auth/signup
 Content-Type: application/json
 
 {
+  "name" : "신제우",
   "email": "shinjw0926@naver.com",
   "password": "1234"
 }
 
+### 로그인
+POST http://127.0.0.1:8080/auth/login
+Content-Type: application/x-www-form-urlencoded
+
+username=shinjw0926@naver.com&password=1234&remember=1
+
 ### 인증 페이지 요청
 GET http://localhost:8080/test
 Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjg4Mzc0MjEyfQ.u8zddLoQtBWFPOoOyqJOrR0i3t3M7gzzPw2Z46uZzFc
+
+### 메인 페이지
+GET http://localhost:8080/
+
+### 사용자 페이지
+GET http://localhost:8080/auth/user
+
+### 관리자 페이지
+GET http://localhost:8080/auth/admin
