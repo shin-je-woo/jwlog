@@ -1,9 +1,11 @@
 package com.jwlog.controller;
 
+import com.jwlog.config.UserPrincipal;
 import com.jwlog.request.Signup;
 import com.jwlog.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +24,7 @@ public class AuthController {
     }
 
     @GetMapping("/auth/user")
-    public String user() {
+    public String user(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         return "유저 페이지입니다.";
     }
 
