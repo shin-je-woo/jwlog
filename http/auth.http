@@ -3,16 +3,19 @@ POST http://127.0.0.1:8080/auth/signup
 Content-Type: application/json
 
 {
-  "name" : "신제우",
+  "name": "신제우",
   "email": "shinjw0926@naver.com",
   "password": "1234"
 }
 
 ### 로그인
 POST http://127.0.0.1:8080/auth/login
-Content-Type: application/x-www-form-urlencoded
+Content-Type: application/json
 
-username=shinjw0926@naver.com&password=1234
+{
+  "email": "shinjw0926@naver.com",
+  "password": "1234"
+}
 
 ### 인증 페이지 요청
 GET http://localhost:8080/test
