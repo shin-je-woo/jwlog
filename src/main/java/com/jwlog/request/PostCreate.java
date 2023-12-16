@@ -1,6 +1,5 @@
 package com.jwlog.request;
 
-import com.jwlog.exception.InvaldRequest;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,11 +19,5 @@ public class PostCreate {
     public PostCreate(String title, String content) {
         this.title = title;
         this.content = content;
-    }
-
-    public void validate() {
-        if (title.contains("제우")) {
-            throw new InvaldRequest("title", "글 제목에 '제우'는 포함할 수 없습니다.");
-        }
     }
 }

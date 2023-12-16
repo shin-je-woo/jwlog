@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +46,7 @@ class PostControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = {"ADMIN"})
     @DisplayName("글 작성 요청")
     void test() throws Exception {
         // given
@@ -87,7 +89,8 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName("글 작성 요청시 DB에 값이 저장된다.")
+    @WithMockUser(roles = {"ADMIN"})
+    @DisplayName("글 작성 및 조회")
     void test3() throws Exception {
         // given
         PostCreate request = PostCreate.builder()
@@ -183,6 +186,7 @@ class PostControllerTest {
 
     @Transactional
     @Test
+    @WithMockUser(roles = {"ADMIN"})
     @DisplayName("글 제목, 내용 수정")
     void test7() throws Exception {
         // given
@@ -209,6 +213,7 @@ class PostControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = {"ADMIN"})
     @DisplayName("게시글 삭제")
     void test8() throws Exception {
         // given
@@ -239,6 +244,7 @@ class PostControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = {"ADMIN"})
     @DisplayName("존재하지 않는 게시글 수정")
     void test10() throws Exception {
         // given
@@ -252,25 +258,6 @@ class PostControllerTest {
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(postEdit)))
                 .andExpect(status().isNotFound())
-                .andDo(print());
-    }
-
-    @Test
-    @DisplayName("게시글 작성 시 제목에 '제우'라는 단어는 포함될 수 없다.")
-    void test11() throws Exception {
-        // given
-        PostCreate request = PostCreate.builder()
-                .title("제우가 작성한 글입니다")
-                .content("글 내용")
-                .build();
-        String json = objectMapper.writeValueAsString(request);
-
-        // expected
-        mockMvc.perform(post("/posts")
-                        .contentType(APPLICATION_JSON)
-                        .content(json)
-                )
-                .andExpect(status().isBadRequest())
                 .andDo(print());
     }
 }

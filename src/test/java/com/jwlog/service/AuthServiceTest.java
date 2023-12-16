@@ -1,6 +1,5 @@
 package com.jwlog.service;
 
-import com.jwlog.crypto.PasswordEncoder;
 import com.jwlog.domain.User;
 import com.jwlog.exception.AlreadyExistsEmailException;
 import com.jwlog.repository.UserRepository;
@@ -10,11 +9,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class AuthServiceTest {
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserRepository userRepository;
@@ -45,7 +48,7 @@ class AuthServiceTest {
 
         User user = userRepository.findAll().iterator().next();
         assertEquals("신제우", user.getName());
-        assertTrue(PasswordEncoder.matches("1234", user.getPassword()));
+        assertTrue(passwordEncoder.matches("1234", user.getPassword()));
         assertEquals("shinjw@naver.com", user.getEmail());
 
     }
