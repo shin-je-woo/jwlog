@@ -1,4 +1,4 @@
-package com.jwlog.repository;
+package com.jwlog.repository.post;
 
 import com.jwlog.domain.Post;
 import org.springframework.data.jpa.repository.JpaRepository;

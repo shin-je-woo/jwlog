@@ -1,9 +1,9 @@
 package com.jwlog.controller;
 
 import com.jwlog.config.UserPrincipal;
-import com.jwlog.request.PostCreate;
-import com.jwlog.request.PostEdit;
-import com.jwlog.request.PostSearch;
+import com.jwlog.request.post.PostCreate;
+import com.jwlog.request.post.PostEdit;
+import com.jwlog.request.post.PostSearch;
 import com.jwlog.response.PostResponse;
 import com.jwlog.service.PostService;
 import jakarta.validation.Valid;

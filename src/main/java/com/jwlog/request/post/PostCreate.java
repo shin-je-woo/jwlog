@@ -1,13 +1,13 @@
-package com.jwlog.request;
+package com.jwlog.request.post;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.ToString;
 
 @Getter
-@Setter
-public class PostEdit {
+@ToString
+public class PostCreate {
 
     @NotBlank(message = "타이틀을 입력해주세요.")
     private final String title;
@@ -16,7 +16,7 @@ public class PostEdit {
     private final String content;
 
     @Builder
-    public PostEdit(String title, String content) {
+    public PostCreate(String title, String content) {
         this.title = title;
         this.content = content;
     }

@@ -1,4 +1,4 @@
-package com.jwlog.request;
+package com.jwlog.request.post;
 
 import lombok.*;
 

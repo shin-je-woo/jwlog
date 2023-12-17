@@ -1,7 +1,7 @@
-package com.jwlog.repository;
+package com.jwlog.repository.post;
 
 import com.jwlog.domain.Post;
-import com.jwlog.request.PostSearch;
+import com.jwlog.request.post.PostSearch;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 

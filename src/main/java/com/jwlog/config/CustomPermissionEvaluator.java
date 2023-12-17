@@ -2,7 +2,7 @@ package com.jwlog.config;
 
 import com.jwlog.domain.Post;
 import com.jwlog.exception.PostNotFound;
-import com.jwlog.repository.PostRepository;
+import com.jwlog.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.PermissionEvaluator;

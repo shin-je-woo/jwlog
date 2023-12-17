@@ -1,6 +1,6 @@
 package com.jwlog.config;
 
-import com.jwlog.repository.PostRepository;
+import com.jwlog.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
