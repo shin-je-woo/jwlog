@@ -1,11 +1,14 @@
 package com.jwlog.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jwlog.config.JwlogMockUser;
 import com.jwlog.domain.Post;
+import com.jwlog.domain.User;
 import com.jwlog.repository.PostRepository;
+import com.jwlog.repository.UserRepository;
 import com.jwlog.request.PostCreate;
 import com.jwlog.request.PostEdit;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,13 +43,17 @@ class PostControllerTest {
     @Autowired
     private PostRepository postRepository;
 
-    @BeforeEach
-    void beforeEach() {
+    @Autowired
+    private UserRepository userRepository;
+
+    @AfterEach
+    void celan() {
         postRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
-    @WithMockUser(roles = {"ADMIN"})
+    @JwlogMockUser
     @DisplayName("글 작성 요청")
     void test() throws Exception {
         // given
@@ -89,7 +96,7 @@ class PostControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {"ADMIN"})
+    @JwlogMockUser
     @DisplayName("글 작성 및 조회")
     void test3() throws Exception {
         // given
@@ -213,13 +220,15 @@ class PostControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {"ADMIN"})
+    @JwlogMockUser
     @DisplayName("게시글 삭제")
     void test8() throws Exception {
         // given
+        User user = userRepository.findAll().get(0);
         Post post = Post.builder()
                 .title("글 제목")
                 .content("글 내용")
+                .user(user)
                 .build();
         postRepository.save(post);
 

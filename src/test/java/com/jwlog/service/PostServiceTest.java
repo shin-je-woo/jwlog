@@ -8,7 +8,6 @@ import com.jwlog.repository.UserRepository;
 import com.jwlog.request.PostCreate;
 import com.jwlog.request.PostEdit;
 import com.jwlog.request.PostSearch;
-import com.jwlog.request.Signup;
 import com.jwlog.response.PostResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,9 +27,6 @@ class PostServiceTest {
     PostService postService;
 
     @Autowired
-    AuthService authService;
-
-    @Autowired
     UserRepository userRepository;
 
     @Autowired
@@ -38,6 +34,7 @@ class PostServiceTest {
 
     @BeforeEach
     void beforeEach() {
+        userRepository.deleteAll();
         postRepository.deleteAll();
     }
 
@@ -45,14 +42,12 @@ class PostServiceTest {
     @DisplayName("글 작성")
     void test1() throws Exception {
         // given
-        Signup signup = Signup.builder()
+        User user = User.builder()
                 .name("신제우")
+                .email("shinjw0926@naver.com")
                 .password("1234")
-                .email("shinjw@naver.com")
                 .build();
-        authService.signup(signup);
-
-        User user = userRepository.findAll().get(0);
+        userRepository.save(user);
 
         PostCreate postCreate = PostCreate.builder()
                 .title("제목입니다")
@@ -61,10 +56,10 @@ class PostServiceTest {
 
         // when
         postService.write(user.getId(), postCreate);
-        Post post = postRepository.findAll().get(0);
 
         // then
         assertEquals(1, postRepository.count());
+        Post post = postRepository.findAll().get(0);
         assertEquals("제목입니다", post.getTitle());
         assertEquals("내용입니다", post.getContent());
     }

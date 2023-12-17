@@ -1,10 +1,12 @@
 package com.jwlog.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jwlog.config.JwlogMockUser;
 import com.jwlog.domain.Post;
 import com.jwlog.repository.PostRepository;
+import com.jwlog.repository.UserRepository;
 import com.jwlog.request.PostCreate;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -42,9 +43,13 @@ public class PostControllerDocTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @BeforeEach
-    void beforeEach() {
+    @Autowired
+    UserRepository userRepository;
+
+    @AfterEach
+    void clean() {
         postRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -75,7 +80,7 @@ public class PostControllerDocTest {
     }
 
     @Test
-    @WithMockUser(roles = {"ADMIN"})
+    @JwlogMockUser
     @DisplayName("글 등록")
     void test2() throws Exception {
         // given
