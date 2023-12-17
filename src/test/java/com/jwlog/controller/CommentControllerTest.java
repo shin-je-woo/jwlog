@@ -8,6 +8,7 @@ import com.jwlog.repository.UserRepository;
 import com.jwlog.repository.comment.CommentRepository;
 import com.jwlog.repository.post.PostRepository;
 import com.jwlog.request.comment.CommentCreate;
+import com.jwlog.request.comment.CommentDelete;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,7 +55,7 @@ class CommentControllerTest {
 
     @Test
     @DisplayName("댓글 작성")
-    void test() throws Exception {
+    void test1() throws Exception {
         // given
         User user = User.builder()
                 .name("신제우")
@@ -92,5 +93,43 @@ class CommentControllerTest {
         assertNotEquals("비밀번호1234", savedComment.getPassword());
         assertTrue(passwordEncoder.matches("비밀번호1234", savedComment.getPassword()));
         assertEquals("댓글입니다.댓글입니다.", savedComment.getContent());
+    }
+
+    @Test
+    @DisplayName("댓글 삭제")
+    void test2() throws Exception {
+        // given
+        User user = User.builder()
+                .name("신제우")
+                .email("shinjw0926@naver.com")
+                .password("1234")
+                .build();
+        userRepository.save(user);
+
+        Post post = Post.builder()
+                .title("글 제목")
+                .content("글 내용")
+                .user(user)
+                .build();
+        postRepository.save(post);
+
+        String encryptedPassword = passwordEncoder.encode("password1234");
+        Comment comment = Comment.builder()
+                .author("작성자 신제우")
+                .password(encryptedPassword)
+                .content("게시글의 내용입니다아아아")
+                .build();
+        comment.setPost(post);
+        commentRepository.save(comment);
+
+        CommentDelete request = new CommentDelete("password1234");
+        String json = objectMapper.writeValueAsString(request);
+
+        // expected
+        mockMvc.perform(post("/comments/{commentId}/delete", comment.getId())
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(json))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 }

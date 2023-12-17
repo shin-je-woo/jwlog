@@ -2,6 +2,7 @@ package com.jwlog.controller;
 
 import com.jwlog.exception.JwlogException;
 import com.jwlog.response.ErrorResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+@Slf4j
 @RestControllerAdvice
 public class ExceptionController {
 
@@ -42,5 +44,18 @@ public class ExceptionController {
         return ResponseEntity
                 .status(e.getStatusCode())
                 .body(responseBody);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> exception(Exception e) {
+        log.error("예외 발생", e);
+
+        ErrorResponse body = ErrorResponse.builder()
+                .code("500")
+                .message(e.getMessage())
+                .build();
+
+        return ResponseEntity.status(500)
+                .body(body);
     }
 }
