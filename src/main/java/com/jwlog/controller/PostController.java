@@ -1,5 +1,6 @@
 package com.jwlog.controller;
 
+import com.jwlog.config.UserPrincipal;
 import com.jwlog.request.PostCreate;
 import com.jwlog.request.PostEdit;
 import com.jwlog.request.PostSearch;
@@ -9,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,8 +24,8 @@ public class PostController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/posts")
-    public void post(@RequestBody @Valid PostCreate request) {
-        postService.write(request);
+    public void post(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody @Valid PostCreate request) {
+        postService.write(userPrincipal.getUserId(), request);
     }
 
     @GetMapping("/posts/{postId}")
@@ -42,7 +44,8 @@ public class PostController {
         postService.edit(postId, postEdit);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') and hasPermission(#postId, 'POST', 'DELETE')")
     @DeleteMapping("/posts/{postId}")
     public void delete(@PathVariable Long postId) {
         postService.delete(postId);

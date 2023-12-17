@@ -2,8 +2,11 @@ package com.jwlog.service;
 
 import com.jwlog.domain.Post;
 import com.jwlog.domain.PostEditor;
+import com.jwlog.domain.User;
 import com.jwlog.exception.PostNotFound;
+import com.jwlog.exception.UserNotFound;
 import com.jwlog.repository.PostRepository;
+import com.jwlog.repository.UserRepository;
 import com.jwlog.request.PostCreate;
 import com.jwlog.request.PostEdit;
 import com.jwlog.request.PostSearch;
@@ -21,12 +24,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostService {
 
+    private final UserRepository userRepository;
     private final PostRepository postRepository;
 
-    public void write(PostCreate postCreate) {
+    public void write(Long userId, PostCreate postCreate) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFound::new);
+
         Post post = Post.builder()
                 .title(postCreate.getTitle())
                 .content(postCreate.getContent())
+                .user(user)
                 .build();
 
         postRepository.save(post);

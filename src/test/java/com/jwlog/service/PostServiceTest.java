@@ -1,11 +1,14 @@
 package com.jwlog.service;
 
 import com.jwlog.domain.Post;
+import com.jwlog.domain.User;
 import com.jwlog.exception.PostNotFound;
 import com.jwlog.repository.PostRepository;
+import com.jwlog.repository.UserRepository;
 import com.jwlog.request.PostCreate;
 import com.jwlog.request.PostEdit;
 import com.jwlog.request.PostSearch;
+import com.jwlog.request.Signup;
 import com.jwlog.response.PostResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +28,12 @@ class PostServiceTest {
     PostService postService;
 
     @Autowired
+    AuthService authService;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
     PostRepository postRepository;
 
     @BeforeEach
@@ -36,13 +45,22 @@ class PostServiceTest {
     @DisplayName("글 작성")
     void test1() throws Exception {
         // given
+        Signup signup = Signup.builder()
+                .name("신제우")
+                .password("1234")
+                .email("shinjw@naver.com")
+                .build();
+        authService.signup(signup);
+
+        User user = userRepository.findAll().get(0);
+
         PostCreate postCreate = PostCreate.builder()
                 .title("제목입니다")
                 .content("내용입니다")
                 .build();
 
         // when
-        postService.write(postCreate);
+        postService.write(user.getId(), postCreate);
         Post post = postRepository.findAll().get(0);
 
         // then
